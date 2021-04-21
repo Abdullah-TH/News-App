@@ -26,16 +26,59 @@ class NewsListViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(NewsCell.self, forCellReuseIdentifier: "cell")
+        tableView.refreshControl = UIRefreshControl()
     }
     
     private func loadNews() {
+        tableView.refreshControl?.beginRefreshing()
         URLSession.shared.dataTask(with: URL(string: "https://www.abdullahth.com/api/news.json")!) { data, response, error in
-            let newsResponse = try! JSONDecoder().decode(NewsRootResponse.self, from: data!)
-            self.allNews = newsResponse.articles
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
+            
+            if let error = error {
+                DispatchQueue.main.async {
+                    self.tableView.refreshControl?.endRefreshing()
+                    self.showAlert(message: error.localizedDescription)
+                }
+                return
             }
+            
+            if let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode != 200 {
+                DispatchQueue.main.async {
+                    self.tableView.refreshControl?.endRefreshing()
+                    self.showAlert(message: "Error with status code: \(statusCode)")
+                }
+                return
+            }
+            
+            guard let data = data else {
+                DispatchQueue.main.async {
+                    self.tableView.refreshControl?.endRefreshing()
+                    self.showAlert(message: "No data found")
+                }
+                return
+            }
+            
+            do {
+                let newsResponse = try JSONDecoder().decode(NewsRootResponse.self, from: data)
+                self.allNews = newsResponse.articles
+                DispatchQueue.main.async {
+                    self.tableView.refreshControl?.endRefreshing()
+                    self.tableView.reloadData()
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.tableView.refreshControl?.endRefreshing()
+                    self.showAlert(message: error.localizedDescription)
+                }
+            }
+            
         }.resume()
+    }
+    
+    private func showAlert(message: String) {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default, handler: nil)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
 }
 
