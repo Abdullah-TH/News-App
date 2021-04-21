@@ -31,47 +31,17 @@ class NewsListViewController: UIViewController {
     
     private func loadNews() {
         tableView.refreshControl?.beginRefreshing()
-        URLSession.shared.dataTask(with: URL(string: "https://www.abdullahth.com/api/news.json")!) { data, response, error in
-            
-            if let error = error {
-                DispatchQueue.main.async {
-                    self.tableView.refreshControl?.endRefreshing()
-                    self.showAlert(message: error.localizedDescription)
-                }
-                return
+        API.loadNews { [weak self] result in
+            guard let self = self else { return }
+            switch result {
+            case .success(let fetchedNews):
+                self.allNews = fetchedNews
+                self.tableView.reloadData()
+            case .failure(let error):
+                self.showAlert(message: error.localizedDescription)
             }
-            
-            if let statusCode = (response as? HTTPURLResponse)?.statusCode, statusCode != 200 {
-                DispatchQueue.main.async {
-                    self.tableView.refreshControl?.endRefreshing()
-                    self.showAlert(message: "Error with status code: \(statusCode)")
-                }
-                return
-            }
-            
-            guard let data = data else {
-                DispatchQueue.main.async {
-                    self.tableView.refreshControl?.endRefreshing()
-                    self.showAlert(message: "No data found")
-                }
-                return
-            }
-            
-            do {
-                let newsResponse = try JSONDecoder().decode(NewsRootResponse.self, from: data)
-                self.allNews = newsResponse.articles
-                DispatchQueue.main.async {
-                    self.tableView.refreshControl?.endRefreshing()
-                    self.tableView.reloadData()
-                }
-            } catch {
-                DispatchQueue.main.async {
-                    self.tableView.refreshControl?.endRefreshing()
-                    self.showAlert(message: error.localizedDescription)
-                }
-            }
-            
-        }.resume()
+            self.tableView.refreshControl?.endRefreshing()
+        }
     }
     
     private func showAlert(message: String) {
