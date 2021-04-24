@@ -12,6 +12,17 @@ class NewsListViewController: UIViewController {
     let tableView = UITableView()
     var allNews: [News] = []
     
+    let newsLoader: NewsLoader
+    
+    init(newsLoader: NewsLoader) {
+        self.newsLoader = newsLoader
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func loadView() {
         view = tableView
     }
@@ -31,7 +42,7 @@ class NewsListViewController: UIViewController {
     
     private func loadNews() {
         tableView.refreshControl?.beginRefreshing()
-        API.loadNews { [weak self] result in
+        newsLoader.fetch { [weak self] result in
             guard let self = self else { return }
             switch result {
             case .success(let fetchedNews):

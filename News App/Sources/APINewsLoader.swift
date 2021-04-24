@@ -1,8 +1,8 @@
 //
-//  API.swift
+//  APINewsLoader.swift
 //  News App
 //
-//  Created by Abdullah Althobetey on 21/04/2021.
+//  Created by Abdullah Althobetey on 24/04/2021.
 //
 
 import Foundation
@@ -21,9 +21,9 @@ enum APIError: LocalizedError {
     }
 }
 
-class API {
+class APINewsLoader: NewsLoader {
     
-    class func loadNews(completion: @escaping (Result<[News], Error>) -> Void) {
+    func fetch(completion: @escaping (Result<[News], Error>) -> Void) {
         URLSession.shared.dataTask(with: URL(string: "https://www.abdullahth.com/api/news.json")!) { data, response, error in
             
             if let error = error {
