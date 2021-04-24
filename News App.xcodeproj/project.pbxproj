@@ -68,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				6A8CDD04262E3AC8006F6825 /* News App */,
+				6A8CDD1B262E3AC9006F6825 /* News AppTests */,
 				6A8CDD03262E3AC8006F6825 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -119,7 +120,6 @@
 				6A40B0702633BEA6006EFAC8 /* NewsLoader.swift */,
 				6A9BF069262F98D600EA7B70 /* models.swift */,
 				6A40B0742633BF49006EFAC8 /* APINewsLoader.swift */,
-				6A8CDD1B262E3AC9006F6825 /* News AppTests */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
