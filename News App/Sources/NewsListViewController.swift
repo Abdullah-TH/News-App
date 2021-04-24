@@ -38,6 +38,12 @@ class NewsListViewController: UIViewController {
         tableView.delegate = self
         tableView.register(NewsCell.self, forCellReuseIdentifier: "cell")
         tableView.refreshControl = UIRefreshControl()
+        tableView.refreshControl?.addAction(
+            UIAction { [weak self] _ in
+                self?.loadNews()
+            },
+            for: .primaryActionTriggered
+        )
     }
     
     private func loadNews() {
