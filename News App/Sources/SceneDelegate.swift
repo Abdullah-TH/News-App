@@ -19,7 +19,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         window = UIWindow(windowScene: windowScene)
         
         let apiNewsLoader = APINewsLoader()
-        let newsVC = NewsListViewController(newsLoader: apiNewsLoader)
+        let fileNewsLoader = FileNewsLoader()
+        let newsVC = NewsListViewController(newsLoader: fileNewsLoader)
         
         window?.rootViewController = newsVC
         window?.makeKeyAndVisible()

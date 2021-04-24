@@ -7,20 +7,6 @@
 
 import Foundation
 
-enum APIError: LocalizedError {
-    case statusCode(Int)
-    case emptyData
-    
-    var errorDescription: String? {
-        switch self {
-        case .statusCode(let code):
-            return "Error with status code: \(code)"
-        case .emptyData:
-            return "No data found"
-        }
-    }
-}
-
 class APINewsLoader: NewsLoader {
     
     func fetch(completion: @escaping (Result<[News], Error>) -> Void) {
@@ -59,5 +45,19 @@ class APINewsLoader: NewsLoader {
             }
             
         }.resume()
+    }
+}
+
+enum APIError: LocalizedError {
+    case statusCode(Int)
+    case emptyData
+    
+    var errorDescription: String? {
+        switch self {
+        case .statusCode(let code):
+            return "Error with status code: \(code)"
+        case .emptyData:
+            return "No data found"
+        }
     }
 }
